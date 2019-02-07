@@ -91,7 +91,7 @@ list. (What's a sensible return value for the empty list?)
 let rec sum (lst : int list) : int =
   match lst with
   | [] -> 0
-  | head :: tail -> 1 + sum tail;;
+  | head :: tail -> head + sum tail;;
 
 (*......................................................................
 Exercise 4: Define a recursive function that returns the maximum
