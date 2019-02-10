@@ -100,8 +100,11 @@ list. You may be warned by the compiler that "this pattern-matching is
 not exhaustive." You may ignore this warning for this lab.
 ......................................................................*)
 
-let max_list (lst : int list) : int =
-  failwith "max_list not implemented" ;;
+let rec max_list (lst : int list) : int =
+  match lst with
+  | [] -> raise (Invalid_argument "max_list: Empty list.")
+  | [x] -> x
+  | head :: tail -> if head > max_list tail then head else max_list tail;;
 
 (*......................................................................
 Exercise 5: Define a function zip, that takes two int lists and
@@ -120,8 +123,10 @@ length lists, to just pad the shorter list with, say, false values, so
 that, zip [1] [2; 3; 4] = [(1, 2); (false, 3); (false, 4)]?
 ......................................................................*)
 
-let zip (x : int list) (y : int list) : (int * int) list =
-  failwith "zip not implemented" ;;
+let rec zip (x : int list) (y : int list) : (int * int) list =
+  match x, y with
+  | [], [] -> []
+  | xhd :: xtl, yhd :: ytl -> (xhd, yhd) :: (zip xtl ytl) ;;
 
 (*......................................................................
 Exercise 6: Recall from Chapter 7 the definition of the function prods
@@ -152,7 +157,7 @@ let rec prods (lst : (int * int) list) : int list =
   | (x, y) :: tail -> (x * y) :: (prods tail) ;;
 
 let dotprod (a : int list) (b : int list) : int =
-  failwith "dotprod not implemented" ;;
+  sum (prods (zip a b)) ;;
 
 (*======================================================================
 Part 3: High-order functional programming with map, filter, and fold
@@ -209,15 +214,15 @@ Exercise 7: Reimplement sum using fold_left, naming it sum_ho (for
 "higher order").
 ......................................................................*)
 
-let sum_ho (lst : int list) : int =
-  failwith "sum_ho not implemented" ;;
+let sum_ho : int list -> int =
+  List.fold_left (+) 0 ;;
 
 (*......................................................................
 Exercise 8: Reimplement prods using map.
 ......................................................................*)
 
-let prods_ho (lst : (int * int) list) : int list =
-  failwith "prods_ho not implemented" ;;
+let prods_ho : (int * int) list -> int list =
+  List.map (fun (x, y) -> x * y) ;;
 
 (*......................................................................
 Exercise 9: The OCaml List module provides -- in addition to the map,
@@ -230,8 +235,8 @@ https://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html.) Use
 map2 to reimplement zip.
 ......................................................................*)
 
-let zip_ho (x : int list) (y : int list) : (int * int) list =
-  failwith "sum_ho not implemented" ;;
+let zip_ho : int list -> int list -> (int * int) list =
+  List.map2 (fun frst scnd -> (frst, scnd)) ;;
 
 (*......................................................................
 Exercise 10: Define a function evens, using these higher-order
@@ -240,4 +245,4 @@ even numbers in its argument list.
 ......................................................................*)
 
 let evens : int list -> int list =
-  fun _ -> failwith "evens not implemented" ;;
+  List.filter (fun n -> n mod 2 = 0) ;;
